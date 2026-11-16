@@ -10,6 +10,8 @@ Ekip: Büşra Ertaş, Gizem Kaya, Meltem Özden, Bengüsu Turan, Yavuz Yalçın
 **Tanıtım filmleri / Films:** [Releases → Tanıtım filmleri](https://github.com/gizakin/transheat-twin-kadikoy/releases/tag/v1.0-film)
 — kısa film 1:11 (16:9), tanıtım filmi 3:27 (16:9), teaser 0:30 (9:16). Seslendirme: ElevenLabs (yalnızca ticari olmayan kullanım).
 
+**Sunum / Presentation:** [PDF](docs/TRANSHEAT_TWIN_Sunum.pdf) · [PowerPoint](https://github.com/gizakin/transheat-twin-kadikoy/releases/tag/v1.0-sunum)
+
 ---
 
 ## Türkçe

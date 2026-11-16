@@ -7,6 +7,9 @@ Ekip: Büşra Ertaş, Gizem Kaya, Meltem Özden, Bengüsu Turan, Yavuz Yalçın
 
 **Canlı arayüz / Live app: https://transheat-twin-kadikoy.netlify.app**
 
+**Tanıtım filmleri / Films:** [Releases → Tanıtım filmleri](https://github.com/gizakin/transheat-twin-kadikoy/releases/tag/v1.0-film)
+— kısa film 1:11 (16:9), tanıtım filmi 3:27 (16:9), teaser 0:30 (9:16). Seslendirme: ElevenLabs (yalnızca ticari olmayan kullanım).
+
 ---
 
 ## Türkçe
@@ -84,3 +87,4 @@ Only open-data-derived files are included; datasets provided by İBB for the com
 - Kod: [MIT](LICENSE)
 - İçerik ve dokümantasyon: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.tr)
 - Üçüncü taraf veriler kendi lisanslarına tabidir ([VERI.md](VERI.md)).
+- Tanıtım filmleri CC BY 4.0 kapsamında değildir: seslendirme ElevenLabs ücretsiz planıyla üretildiğinden yalnızca ticari olmayan amaçlarla, "Seslendirme: ElevenLabs" atfıyla paylaşılabilir.

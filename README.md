@@ -5,6 +5,8 @@ Marmara Belediyeler Birliği · *Yer Gözlemden Dijital İkize* Programı
 
 Ekip: Büşra Ertaş, Gizem Kaya, Meltem Özden, Bengüsu Turan, Yavuz Yalçın
 
+**Canlı arayüz / Live app: https://transheat-twin-kadikoy.netlify.app**
+
 ---
 
 ## Türkçe

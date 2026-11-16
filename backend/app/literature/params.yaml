@@ -1,0 +1,216 @@
+# Literatür ve varsayımlar kütüphanesi
+# --------------------------------------------------------------------------------------------
+# Kural: bir değer ancak `dogrulama` alanında belirtilen yoldan metniyle kontrol edildiyse buraya girer.
+# Kaynağı bulunamayan parametreler `tanimlanmamis: true` ile tutulur ve arayüzde
+# "Literatür parametresi tanımlanmamış" olarak gösterilir. Bu dosya elle genişletilebilir.
+# guven: yuksek = birincil metin/özet doğrulandı; orta = güvenilir ikincil kaynakta doğrulandı;
+#        dusuk = türetilmiş veya bağlamı farklı.
+
+sources:
+  santamouris2013:
+    kunye: "Santamouris, M. (2013). Using cool pavements as a mitigation strategy to fight urban heat island — A review of the actual developments. Renewable and Sustainable Energy Reviews, 26, 224–240."
+    doi: "10.1016/j.rser.2013.05.047"
+    calisma_alani: "Derleme (uluslararası; birçok çalışma Atina, ABD, Japonya)"
+    yontem: "Literatür derlemesi"
+    dogrulama: "Tam metin PDF (coolrooftoolkit.org kopyası) üzerinde ilgili cümleler okundu"
+  epa2008:
+    kunye: "U.S. EPA (2008, taslak). Reducing Urban Heat Islands: Compendium of Strategies — Cool Pavements (Bölüm 5)."
+    doi: null
+    url: "https://19january2021snapshot.epa.gov/sites/static/files/2017-05/documents/reducing_urban_heat_islands_ch_5.pdf"
+    calisma_alani: "ABD"
+    yontem: "Kılavuz / derleme"
+    dogrulama: "Tam metin PDF okundu"
+  armson2012:
+    kunye: "Armson, D., Stringer, P., Ennos, A. R. (2012). The effect of tree shade and grass on surface and globe temperatures in an urban area. Urban Forestry & Urban Greening, 11(3), 245–255."
+    doi: "10.1016/j.ufug.2012.05.002"
+    calisma_alani: "Manchester, Birleşik Krallık"
+    yontem: "Saha ölçümü (yüzey ve glob sıcaklığı)"
+    dogrulama: "Özet, University of Manchester Research Explorer sayfasından okundu"
+  lee2013:
+    kunye: "Lee, H., Holst, J., Mayer, H. (2013). Modification of human-biometeorologically significant radiant flux densities by shading as local method to mitigate heat stress in summer within urban street canyons. Advances in Meteorology, 2013, 312572."
+    doi: "10.1155/2013/312572"
+    calisma_alani: "Freiburg, Almanya (Orta Avrupa yaz koşulları)"
+    yontem: "Saha ölçümü (Ta, Tmrt, PET)"
+    dogrulama: "Özet OpenAlex ve Semantic Scholar üzerinden okundu"
+  bowler2010:
+    kunye: "Bowler, D. E., Buyung-Ali, L., Knight, T. M., Pullin, A. S. (2010). Urban greening to cool towns and cities: A systematic review of the empirical evidence. Landscape and Urban Planning, 97(3), 147–155."
+    doi: "10.1016/j.landurbplan.2010.05.006"
+    calisma_alani: "Uluslararası meta-analiz"
+    yontem: "Sistematik derleme ve meta-analiz"
+    dogrulama: "Makale kapalı erişimli; değerler Konijnendijk vd. (2013) IFPRA sistematik derlemesinde (s. 'Key findings') okundu"
+
+parameters:
+  # ---------------------------------------------------------------- albedo (güneş yansıtıcılığı)
+  - id: albedo_asfalt_yeni
+    mudahale: "Zemin malzemesi"
+    parametre: "Albedo — yeni asfalt"
+    deger: [0.05, 0.10]
+    birim: "—"
+    kaynak: santamouris2013
+    not: "Santamouris (2013) içinde [133] numaralı kaynağa atfen."
+    guven: yuksek
+  - id: albedo_asfalt_eski
+    mudahale: "Zemin malzemesi"
+    parametre: "Albedo — eskimiş asfalt"
+    deger: [0.10, 0.15]
+    birim: "—"
+    kaynak: santamouris2013
+    guven: yuksek
+  - id: albedo_beton_yeni
+    mudahale: "Zemin malzemesi"
+    parametre: "Albedo — yeni beton"
+    deger: [0.35, 0.40]
+    birim: "—"
+    kaynak: santamouris2013
+    guven: yuksek
+  - id: albedo_beton_eski
+    mudahale: "Zemin malzemesi"
+    parametre: "Albedo — eskimiş beton"
+    deger: [0.20, 0.30]
+    birim: "—"
+    kaynak: santamouris2013
+    guven: yuksek
+  - id: albedo_geleneksel_aralik
+    mudahale: "Zemin malzemesi"
+    parametre: "Güneş yansıtıcılığı — geleneksel asfalt ve beton (genel aralık)"
+    deger: [0.05, 0.40]
+    birim: "—"
+    kaynak: epa2008
+    guven: yuksek
+  - id: albedo_granit
+    mudahale: "Zemin malzemesi"
+    parametre: "Albedo — granit plak taş"
+    tanimlanmamis: true
+  - id: albedo_bazalt
+    mudahale: "Zemin malzemesi"
+    parametre: "Albedo — bazalt plak taş (açık/koyu)"
+    tanimlanmamis: true
+  - id: albedo_cim
+    mudahale: "Yeşil alan"
+    parametre: "Albedo — çim"
+    tanimlanmamis: true
+
+  # ---------------------------------------------------------------- yüzey sıcaklığı – albedo ilişkisi
+  - id: tsurf_albedo_pair
+    mudahale: "Açık renkli / cool pavement"
+    parametre: "En yüksek yüzey sıcaklığı: albedo ≈0,1 → ≈71 °C; albedo ≈0,5 → ≈53 °C"
+    deger: [53, 71]
+    birim: "°C"
+    kaynak: santamouris2013
+    not: "Santamouris (2013) içinde [99] numaralı duyarlılık analizine atfen; belirli iklim/gün koşulu içindir."
+    guven: yuksek
+  - id: tsurf_per_albedo_derived
+    mudahale: "Açık renkli / cool pavement"
+    parametre: "En yüksek yüzey sıcaklığı değişimi / 0,1 albedo artışı (iki noktadan doğrusal türetim)"
+    deger: [-4.5, -4.5]
+    birim: "K / 0,1 albedo"
+    kaynak: santamouris2013
+    not: "(71−53)/(0,5−0,1)=45 K/albedo → 4,5 K/0,1. Türetilmiş doğrusal yaklaşım; Kadıköy için doğrulanmamıştır."
+    guven: dusuk
+  - id: tair_city_albedo
+    mudahale: "Açık renkli / cool pavement"
+    parametre: "Kent ölçeğinde ortalama hava sıcaklığı düşüşü (kaplama albedosu +0,15 ve çatı albedosu +0,25 birlikte)"
+    deger: [0.11, 0.53]
+    birim: "K"
+    kaynak: santamouris2013
+    not: "Kent ölçeği benzetimi; meydan ölçeğinde müdahaleye doğrudan uygulanamaz — yalnızca bağlam bilgisi."
+    guven: dusuk
+
+  # ---------------------------------------------------------------- geçirgenlik
+  - id: permeable_effect
+    mudahale: "Geçirgen yüzey"
+    parametre: "Geçirgen kaplamanın yüzey sıcaklığına etkisi"
+    tanimlanmamis: true
+    not: "Santamouris (2013): kuru geçirgen kaplamalar geçirimsiz eşdeğerlerinden daha sıcak olabilir; etkinin yönü nem koşuluna bağlıdır. Sayısal katsayı tanımlanmamıştır."
+    kaynak: santamouris2013
+
+  # ---------------------------------------------------------------- gölge (ağaç ve yapı)
+  - id: shade_tsurf_tree
+    mudahale: "Ağaçlandırma"
+    parametre: "Ağaç gölgesinin en yüksek yüzey sıcaklığını düşürmesi (en fazla)"
+    deger: [0, 19]
+    birim: "°C"
+    kaynak: armson2012
+    guven: yuksek
+  - id: shade_globe
+    mudahale: "Ağaçlandırma / gölgeleme"
+    parametre: "Gölgenin glob sıcaklığını düşürmesi (en fazla)"
+    deger: [5, 7]
+    birim: "°C"
+    kaynak: armson2012
+    not: "Glob sıcaklığı Tmrt ile ilişkilidir ancak aynı değildir. Manchester iklimi Kadıköy'den farklıdır."
+    guven: orta
+  - id: shade_tair
+    mudahale: "Ağaçlandırma / gölgeleme elemanı"
+    parametre: "Gölgede hava sıcaklığı düşüşü (ağaç ve yapı gölgesi)"
+    deger: [0, 2]
+    birim: "°C"
+    kaynak: lee2013
+    not: "Özette 'Ta düşüşü 2 °C'yi aşmadı' ifadesi."
+    guven: yuksek
+  - id: shade_pet_steps
+    mudahale: "Ağaçlandırma / gölgeleme elemanı"
+    parametre: "PET'te düşüş (ASHRAE termal duyum ölçeğinde kademe)"
+    deger: [2, 2]
+    birim: "kademe"
+    kaynak: lee2013
+    guven: yuksek
+  - id: pv_shade_thermal
+    mudahale: "Fotovoltaik gölgeleme"
+    parametre: "PV gölgeleme elemanının termal konfor etkisi (gölge dışı ek etki)"
+    tanimlanmamis: true
+    not: "PV elemanının gölgesi geometrik olarak hesaplanır; gölgenin etkisi için 'Gölgeleme elemanı' parametreleri gösterilir."
+
+  # ---------------------------------------------------------------- yeşil alan
+  - id: grass_tsurf
+    mudahale: "Yeşil alan"
+    parametre: "Çimin en yüksek yüzey sıcaklığını düşürmesi (sert zemine göre, en fazla)"
+    deger: [0, 24]
+    birim: "°C"
+    kaynak: armson2012
+    not: "Aynı çalışmaya göre çimin yerel hava konforuna etkisi sınırlıdır."
+    guven: yuksek
+  - id: park_cooling_day
+    mudahale: "Yeşil alan (park ölçeği)"
+    parametre: "Parkların çevreye göre gündüz ortalama serinliği"
+    deger: [0.94, 0.94]
+    birim: "°C"
+    kaynak: bowler2010
+    not: "26 etki büyüklüğü / 16 çalışma. Park ölçeği içindir; küçük yeşil yamalara uygulanmamalıdır."
+    guven: orta
+  - id: park_cooling_night
+    mudahale: "Yeşil alan (park ölçeği)"
+    parametre: "Parkların çevreye göre gece ortalama serinliği"
+    deger: [1.15, 1.15]
+    birim: "°C"
+    kaynak: bowler2010
+    guven: orta
+
+assumptions:
+  - id: storey_height
+    ad: "Kat yüksekliği"
+    deger: 3.0
+    birim: "m"
+    kullanim: "Ölçülmüş çatı kotu bulunmayan binalarda yükseklik = kat adedi × 3,0 m"
+  - id: flat_terrain_shadow
+    ad: "Gölge düzlemi"
+    deger: "yatay"
+    kullanim: "Gölge, bina tabanı kotundaki yatay düzleme düşürülür; arazi eğimi ihmal edilir."
+  - id: opaque_canopy
+    ad: "Ağaç tacı geçirgenliği"
+    deger: 0
+    birim: "%"
+    kullanim: "Ağaç tacı opak kabul edilir (yaprak dökmeyen/dolgun taç). Yaprak döken türlerde kışın gölge abartılır."
+  - id: tree_crown_shape
+    ad: "Taç geometrisi"
+    deger: "küre"
+    kullanim: "Taç merkezi = boy − taç çapı/2 yüksekliğinde küre; gölgesi elips."
+  - id: hard_surface_impervious
+    ad: "Mevcut sert zemin"
+    deger: "geçirimsiz"
+    kullanim: "Mevcut durumda bina ve bitkili alan dışındaki kara alanı geçirimsiz sert zemin kabul edilir."
+  - id: veg_threshold
+    ad: "Bitki örtüsü eşiği"
+    deger: 0.05
+    birim: "ExG"
+    kullanim: "Ortofotoda ExG=(2G−R−B)/(R+G+B) > 0,05 olan pikseller bitkili sayılır (0,5 m)."

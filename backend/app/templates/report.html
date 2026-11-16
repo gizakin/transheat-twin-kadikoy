@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>TRANSHEAT TWIN – {{ title }}</title>
+<style>
+  :root { --ink:#1f2933; --muted:#5f6b7a; --line:#d5dbe3; --accent:#1d4e89; --head:#eef2f7; }
+  body { font-family: "Segoe UI", system-ui, sans-serif; color: var(--ink); margin: 0 auto; max-width: 980px; padding: 28px; font-size: 13.5px; line-height: 1.5; }
+  h1 { color: var(--accent); font-size: 24px; margin: 0 0 4px; }
+  h2 { font-size: 17px; border-bottom: 1px solid var(--line); padding-bottom: 4px; margin-top: 28px; }
+  h3 { font-size: 14px; margin: 16px 0 6px; }
+  .meta { color: var(--muted); }
+  table { border-collapse: collapse; width: 100%; margin: 6px 0 12px; font-size: 12.5px; }
+  th, td { border: 1px solid var(--line); padding: 4px 6px; text-align: left; vertical-align: top; }
+  th { background: var(--head); }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .tag { display: inline-block; font-size: 11px; padding: 1px 6px; border-radius: 9px; border: 1px solid var(--line); color: var(--muted); white-space: nowrap; }
+  .note { background: #fff4e5; border-left: 3px solid #d98a00; padding: 8px 10px; margin: 8px 0; }
+  .info { background: #eef4fb; border-left: 3px solid var(--accent); padding: 8px 10px; margin: 8px 0; }
+  img { max-width: 100%; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media print { body { padding: 0; } h2 { page-break-after: avoid; } .pb { page-break-before: always; } }
+</style>
+</head>
+<body>
+<h1>TRANSHEAT TWIN – {{ title }}</h1>
+<div class="meta">Kadıköy Kentsel Isı ve Ulaşım Karar Destek Sistemi · Oluşturulma: {{ now }}</div>
+<div class="note">Bu rapor karar <b>desteği</b> amaçlıdır; senaryolar arasında otomatik sıralama veya "en iyi senaryo" hükmü verilmez.
+Hiçbir sıcaklık değeri fiziksel model çalıştırılarak üretilmemiştir.</div>
+
+<h2>1. Çalışma alanı</h2>
+<p>Kadıköy Meydanı Kentsel Tasarım Yarışması alanı (sınır: {{ meta.boundary.source }}). Koordinat sistemi TUREF/TM30 (EPSG:5254).</p>
+
+<h2>2–3. Kullanılan veriler ve veri kaynakları</h2>
+<table><tr><th>Katman</th><th>Kaynak</th><th>Tarih</th><th>Yöntem</th><th>Not</th></tr>
+{% for k, m in meta.items() %}<tr><td>{{ m.title }}</td><td>{{ m.source }}</td><td>{{ m.date }}</td><td>{{ METHOD_TR.get(m.method, m.method) }}</td><td>{{ m.notes or "" }}</td></tr>{% endfor %}
+</table>
+
+{% for r in results %}
+<div class="{{ 'pb' if not loop.first else '' }}"></div>
+<h2>4–6. Senaryo: {{ r.scenario.scenario_name }}</h2>
+<p><b>Temel durum:</b> {{ r.base_label }} · <b>Zaman:</b> {{ r.time }} (güneş yüksekliği {{ '%.1f' % r.sun.elevation }}°, azimut {{ '%.1f' % r.sun.azimuth }}°) ·
+<b>Analiz alanı:</b> {{ '{:,.0f}'.format(r.area_m2).replace(',', '.') }} m² · <b>Veri güveni:</b> {{ r.confidence }}</p>
+{% for n in r.notes %}<div class="info">{{ n }}</div>{% endfor %}
+
+<h3>7. Kullanılan parametreler</h3>
+<table><tr><th>Müdahale</th><th>Parametreler</th></tr>
+{% for iv in r.scenario.interventions %}<tr><td>{{ iv.type }}</td><td>{% for k, v in iv.items() if k not in ('type', 'geometry') %}{{ k }}: {{ v }}{% if not loop.last %}; {% endif %}{% endfor %}</td></tr>{% endfor %}
+</table>
+<ul>{% for l in r.log %}<li>{{ l }}</li>{% endfor %}{% for w in r.warnings %}<li><b>Uyarı:</b> {{ w }}</li>{% endfor %}</ul>
+
+<h3>8–9. Hesaplama yöntemi ve sonuçlar</h3>
+<table><tr><th>Gösterge</th><th>Temel</th><th>Senaryo</th><th>Fark</th><th>Yöntem</th><th>Formül</th></tr>
+{% set base = {} %}{% for k in r.kpis_base %}{% set _ = base.update({k.id: k}) %}{% endfor %}
+{% for k in r.kpis_scenario %}{% set u = k.unit if k.unit != '—' else '' %}<tr><td>{{ k.label }}</td><td class="num">{{ base.get(k.id, {}).get('value', '—') }} {{ u }}</td>
+<td class="num">{{ k.value }} {{ u }}</td><td class="num">{{ r.deltas.get(k.id) if r.deltas.get(k.id) is not none else '—' }}</td>
+<td><span class="tag">{{ METHOD_TR.get(k.method, k.method) }}</span></td><td>{{ k.explain.formul }}</td></tr>{% endfor %}
+</table>
+<h3>Değerlendirme</h3>
+<ul>{% for n in r.narrative %}<li>{{ n }}</li>{% endfor %}</ul>
+<h3>Literatür tabanlı etki aralıkları</h3>
+<ul>{% for e in r.literature_effects %}<li>{{ e.text }} <span class="tag">güven: {{ e.confidence }}</span></li>{% else %}<li>Bu senaryo için uygulanabilir literatür parametresi yok.</li>{% endfor %}</ul>
+
+<h3>Etki analizi</h3>
+<div class="grid2">
+<div><b>Pozitif etkiler</b><ul>{% for i in r.impacts.positive %}<li>{{ i.text }} <span class="tag">{{ i.basis }}</span></li>{% else %}<li>—</li>{% endfor %}</ul></div>
+<div><b>Olası olumsuz etkiler</b><ul>{% for i in r.impacts.negative %}<li>{{ i.text }} <span class="tag">{{ i.basis }}</span></li>{% else %}<li>—</li>{% endfor %}</ul></div>
+<div><b>Etkilenen alanlar</b><ul>{% for i in r.impacts.affected %}<li>{{ i.text }}</li>{% else %}<li>—</li>{% endfor %}</ul></div>
+<div><b>Etkilenen paydaşlar</b><ul>{% for s in r.impacts.stakeholders %}<li>{{ s.name }}</li>{% endfor %}</ul><span class="meta">Paydaşlar mekânsal kesişim ve müdahale türünden türetilmiştir; varsayım içerir.</span></div>
+</div>
+
+<h3>10. Harita</h3>
+<img src="{{ maps[loop.index0] }}" alt="Senaryo haritası">
+<p class="meta">Koyu lacivert: temel gölge · mavi: yeni gölge · turuncu çerçeve: müdahale alanı · yeşil: yeni ağaç taçları · kırmızı: etkilenen aktarma güzergâhları · mor: önerilen güzergâh.</p>
+{% endfor %}
+
+<h2 class="pb">11. Grafikler</h2>
+<img src="{{ bars }}" alt="Gösterge karşılaştırması">
+
+<h2>12. Varsayımlar</h2>
+<table><tr><th>Varsayım</th><th>Değer</th><th>Kullanım</th></tr>
+{% for a in assumptions %}<tr><td>{{ a.ad }}</td><td>{{ a.deger }} {{ a.birim or '' }}</td><td>{{ a.kullanim }}</td></tr>{% endfor %}
+</table>
+
+<h2>13. Belirsizlikler</h2>
+<ul>
+<li>Uydu yüzey sıcaklığı (LST), meteorolojik veri ve yaya sayımı klasörde yoktur; termal konfor (Tmrt/UTCI/PET) hesaplanmamıştır.</li>
+<li>Mevcut durumda sert zemin, kalan alan olarak türetilmiştir; asfalt/taş ayrımı yapılamamıştır.</li>
+<li>Proje durumunda taramasız döşeme alanları desen çizgisi yoğunluğundan çıkarılmıştır.</li>
+<li>Yürüme mesafeleri, taşıt yolları ayrıştırılamadığından iyimser alt sınırdır.</li>
+<li>Gölge geometrik hesaptır: yatay zemin, opak taç ve bulutsuz gökyüzü varsayılmıştır.</li>
+</ul>
+
+<h2>14. Literatür kaynakları</h2>
+<table><tr><th>Parametre</th><th>Değer</th><th>Kaynak</th><th>Çalışma alanı</th><th>Güven</th></tr>
+{% for p in params %}<tr><td>{{ p.parametre }}</td><td>{% if p.tanimlanmamis %}Literatür parametresi tanımlanmamış{% else %}{{ p.deger[0] }}{% if p.deger[1] != p.deger[0] %}–{{ p.deger[1] }}{% endif %} {{ p.birim }}{% endif %}</td>
+<td>{{ sources.get(p.kaynak, {}).get('kunye', '—') }}</td><td>{{ sources.get(p.kaynak, {}).get('calisma_alani', '—') }}</td><td>{{ p.guven or '—' }}</td></tr>{% endfor %}
+</table>
+</body>
+</html>
